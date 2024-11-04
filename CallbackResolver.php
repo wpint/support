@@ -8,6 +8,46 @@ use ReflectionMethod;
 class CallbackResolver
 {
 
+    public function __construct(
+        private $callback,
+        private $params,
+        private $match
+    ) {
+        $exported = self::export($this->callback, $this->params, $this->match);
+        $this->callback =   $exported['callback'];
+        $this->params   =   $exported['params'];
+    }
+
+    /**
+     * Get Callback to fire in the client's app
+     *
+     * @return array|callable|null
+     */
+    public function getCallback() : array|callable|null
+    {
+        return $this->callback ?? null;
+    }
+
+    /**
+     * Get params
+     *
+     * @return array|null
+     */
+    public function getParams() : array|null
+    {
+        return $this->params ?? null;
+    }
+
+    /**
+     * Check if params must be matched to the given callback or not
+     *
+     * @return boolean
+     */
+    public function isMatched() : bool
+    {
+        return $this->match;
+    }
+
     /**
      * Resolve the given callback with any accepted callback type by container's call method 
      *
@@ -18,11 +58,29 @@ class CallbackResolver
     public static function call($callback, $args = [], $matching = true) : mixed
     {
         
-        if(!self::isCallableClosure($callback))
+        $exported = self::export($callback, $args, $matching);
+        return app()->call($exported['callback'], $exported['params']);
+    }
+
+    /**
+     * Export the proper callback to defer calling by the client
+     *
+     * @param [type] $callback
+     * @param array $args
+     * @param boolean $matching
+     * @return mixed
+     */
+    public static function export($callback, $args = [], $matching = true) : mixed
+    {
+        
+        if( ! self::isCallableClosure($callback))
         {
             $callback = self::makeUp($callback);
             $info = new ReflectionMethod($callback[0], $callback[1]);
-            $callback = "$callback[0]@$callback[1]";
+            $callback = [
+                'class'     =>  $callback[0],
+                'method'    =>  $callback[1]
+            ];
         }
         else {
             $info = new ReflectionFunction($callback);
@@ -30,7 +88,10 @@ class CallbackResolver
 
         $params = $matching ? self::matchTheparamsWithGivenArgs($info->getParameters(), $args) : $args;
         
-        return app()->call($callback, $params);
+        return [
+            'callback'  =>  $callback, 
+            'params'    =>  $params
+        ];
     }
 
     /**
@@ -104,8 +165,10 @@ class CallbackResolver
     {
         $keys =  collect($reflectedParams)->pluck('name');
         $values = collect($args);
+
         // method parameters and args must be same length
         if($keys->count() != $values->count()) return [];
         return $keys->combine($values)->toArray();
     }
+
 }
