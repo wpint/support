@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\Support\Facades;
 
-use Wpint\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static self controller(array $controller)
@@ -10,7 +10,8 @@ use Wpint\Support\Facade;
  * @method static self path(string $path)
  * @method static self name(string $name)
  * @method static self method(Wpint\Route\Enums\RouteHttpMethodEnum $method)
- *
+ * @method register()
+ * 
  * @see \WPINT\Framework\Services\Route\Concretes\AdminRoute
  */
 class WebRoute extends Facade

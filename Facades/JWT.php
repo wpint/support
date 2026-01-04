@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\Support\Facades;
 
-use Wpint\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 class JWT extends Facade
 {

@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\Support\Facades;
 
-use Wpint\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static self controller(array $controller)
@@ -11,6 +11,7 @@ use Wpint\Support\Facade;
  * @method static self name(string $name)
  * @method static self action(string $icon)
  * @method static string getAction(string $icon)
+ * @method register()
  *
  * @see \WPINT\Framework\Services\Route\Concretes\AjaxRoute
  */

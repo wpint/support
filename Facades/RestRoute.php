@@ -1,7 +1,7 @@
 <?php 
 namespace Wpint\Support\Facades;
 
-use Wpint\Support\Facade;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static self controller(array $controller)
@@ -12,6 +12,7 @@ use Wpint\Support\Facade;
  * @method static self name(string $name)
  * @method static self namespace(string $namespace)
  * @method static self permission(callable $permission)
+ * @method register()
  *
  * @see \WPINT\Framework\Services\Route\Concretes\RestAjax
  */
